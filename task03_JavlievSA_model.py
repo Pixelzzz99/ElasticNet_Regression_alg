@@ -26,6 +26,7 @@ class ElasticNetRegressor(object):
         for epoch in range(self.n_epoch):
             for batch_x, batch_y in zip(batches_for_x, batches_for_y):
                 self.update_weights(batch_x, batch_y)
+
         return self
 
     def update_weights(self, batch_x, batch_y):
@@ -42,14 +43,14 @@ class ElasticNetRegressor(object):
         for j in range(n_column):
             if self.weights[j] > 0:
                 dW[j] = (-(2 * x_batch[:, j].dot(y_batch - Y_pred)) +
-                         self.l1_coef + 2 * self.l2_coef * self.weights[j])/m_row
+                         self.l1_coef + 2 * self.l2_coef * self.weights[j]) / m_row
             else:
                 dW[j] = (- (2 * x_batch[:, j].dot(y_batch - Y_pred)) -
-                           self.l1_coef + 2 * self.l2_coef * self.weights[j])/m_row
+                           self.l1_coef + 2 * self.l2_coef * self.weights[j]) / m_row
 
-        db = - 2 * np.sum(y_batch - Y_pred) 
-        self.weights = self.weights - self.alpha * (dW / m_row)
-        self.b = self.b - self.alpha * (db / m_row)
+        db = - 2 * np.sum(y_batch - Y_pred) / m_row
+        self.weights = self.weights - self.alpha * dW
+        self.b = self.b - self.alpha * db
         self.alpha = self.alpha / self.delta
         return self
 
